@@ -69,11 +69,11 @@ public class PlayerMovement : NetworkBehaviour {
         {
             CmdMove(new Vector2Int(0, 1));
         }
-        else if (Input.GetKey(KeyCode.UpArrow))
+        else if (Input.GetAxis("Vertical") > 0.1f)
         {
             CmdMove(new Vector2Int(-1, 0));
         }
-        else if (Input.GetKey(KeyCode.DownArrow))
+        else if (Input.GetAxis("Vertical") < -0.1f)
         {
             CmdMove(new Vector2Int(1, 0));
         }

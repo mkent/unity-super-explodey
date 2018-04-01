@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class GridBlock : GridBehaviour {
 
@@ -61,7 +62,7 @@ public class GridBlock : GridBehaviour {
     }
 
 
-    public void DetonateDamage()
+    public void DetonateDamage(NetworkInstanceId netID)
     {
         //Solid blocks can't be damaged and also stop the explosion 
         if (!IsDestructible()) return;
@@ -69,7 +70,7 @@ public class GridBlock : GridBehaviour {
         //so this block is already empty, there could be a player here. Get gridmanager to check. Spawns are also empty.
         if (blockType == BlockType.Empty || blockType == BlockType.Spawn)
         {
-            gridManager.PlayerDamage(gridPosition);
+            gridManager.PlayerDamage(gridPosition, netID);
         }
 
         if (blockType == BlockType.Spawn) return; //we don't change spawn blocks.

@@ -1,36 +1,42 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class PlayerManager : MonoBehaviour {
 
-	[System.Serializable]
-	public class Player
-	{
-		public PlayerMovement playerMovement;
-		public PlayerCombat playerCombat;
-
-		public Player (PlayerMovement _playerMovement, PlayerCombat _playerCombat)
-		{
-			playerMovement = _playerMovement;
-			playerCombat = _playerCombat;
-		}
-	}
 
 	public List<Player> players = new List<Player>();
 
     //this adds the player the player manager's list. This is called from PlayerCombat at the moment.
-	public void AddPlayer(GameObject playerObject)
+	public void AddPlayer(Player playerObject)
 	{
-		Player newPlayer = new Player (playerObject.GetComponent<PlayerMovement> (), playerObject.GetComponent<PlayerCombat> ());
-		players.Add (newPlayer);
+        players.Add (playerObject);
 	}
 
-	public void RemovePlayer(GameObject playerObject)
+    public void PlayerScored(NetworkInstanceId netID)
+    {
+        GetPlayer(netID).AddScore();
+    }
+
+    Player GetPlayer(NetworkInstanceId netID)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].netId != netID) continue;
+
+            return players[i];
+        }
+
+        return null;
+    }
+
+
+    public void RemovePlayer(Player playerObject)
 	{
 		for (int i = 0; i < players.Count; i++) 
 		{
-			if (players [i].playerMovement.gameObject == playerObject) 
+			if (players [i] == playerObject) 
 			{
 				players.RemoveAt (i);
 				break;
@@ -38,15 +44,6 @@ public class PlayerManager : MonoBehaviour {
 		}
 	}
 
-	public void DetonateDamage(Vector2Int gridPosition)
-	{
-		for (int i = 0; i < players.Count; i++)
-		{
-			if (GridManager.IsEqual(players [i].playerMovement.GridPosition (),gridPosition))
-			{
-				players [i].playerCombat.DetonateDamage ();
-			}
-		}
-	}
+
 
 }

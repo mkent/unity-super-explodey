@@ -19,7 +19,7 @@ public class PlayerManager : MonoBehaviour {
 
 	public List<Player> players = new List<Player>();
 
-
+    //this adds the player the player manager's list. This is called from PlayerCombat at the moment.
 	public void AddPlayer(GameObject playerObject)
 	{
 		Player newPlayer = new Player (playerObject.GetComponent<PlayerMovement> (), playerObject.GetComponent<PlayerCombat> ());

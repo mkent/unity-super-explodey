@@ -28,11 +28,14 @@ public class PlayerMovement : NetworkBehaviour {
         gridPosition = gridManager.WorldToGridPosition(_transform.position);
         //annd actually set us to be on the grid.
         _transform.position = gridManager.GridToWorldPosition(gridPosition);
+        //make sure our destinations are reset.
+        destination = _transform.position;
+        gridDestination = gridPosition;
     }
+
 
     void Update()
     {
-
         if (AtDestination())
         {
             gridPosition = gridDestination;
@@ -52,13 +55,17 @@ public class PlayerMovement : NetworkBehaviour {
 
     private void PlayerInput() //temporary -- get somethign going in input manager.
     {
-        if (!isLocalPlayer) return;
+        if (!isLocalPlayer)
+        {
+            return;
+        }
 
-        if (Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetAxis("Horizontal") < -0.1f) //left
         {
             CmdMove(new Vector2Int(0, -1));
+
         }
-        else if (Input.GetKey(KeyCode.RightArrow))
+        else if (Input.GetAxis("Horizontal") > 0.1f) //right
         {
             CmdMove(new Vector2Int(0, 1));
         }

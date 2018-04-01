@@ -34,7 +34,6 @@ public struct Vector2Int
 
 }
 
-
 public class GridManager : MonoBehaviour {
 
 	private PlayerManager playerManager;
@@ -44,7 +43,6 @@ public class GridManager : MonoBehaviour {
 	public BlockData[] blockData;
     public int loadData = 0;
     private GridBlock[,] grid;
-
 
 	private LoadCSV csvData;
 	private bool dataReady = false;
@@ -328,19 +326,21 @@ public class GridManager : MonoBehaviour {
 
         return false;
     }
-
-    public List<Transform> GetSpawns()
+    
+    public Vector3 GetSpawnPosition()
     {
-        List<Transform> spawnTransforms = new List<Transform>();
-
         List<GridBlock> gridBlocks = GetBlocksOfType(BlockType.Spawn);
 
         for (int i = 0; i < gridBlocks.Count; i++)
         {
-            spawnTransforms.Add(gridBlocks[i].transform);
+            if (gridBlocks[i].IsOccupied()) continue;
+
+            return gridBlocks[i].Position();
         }
 
-        return spawnTransforms;
+        Debug.LogWarning("No open spawn position found, returning origin");
+
+        return Vector3.zero;
     }
 
     public List<GridBlock> GetBlocksOfType(BlockType blockType)

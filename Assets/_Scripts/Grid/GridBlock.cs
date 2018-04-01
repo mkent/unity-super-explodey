@@ -39,7 +39,13 @@ public class GridBlock : GridBehaviour {
 		model.transform.SetParent (transform);
 		model.transform.localPosition = Vector3.zero;
 		model.transform.localScale = Vector3.one;
-	}
+
+        if (blockType == BlockType.Spawn)
+        {
+            gameObject.AddComponent<UnityEngine.Networking.NetworkStartPosition>();
+        }
+
+    }
 
 	public void SetGridPosition(Vector2Int _gridPosition)
 	{
@@ -58,7 +64,7 @@ public class GridBlock : GridBehaviour {
     public void DetonateDamage()
     {
         //Solid blocks can't be damaged and also stop the explosion 
-        if (blockType == BlockType.Solid) return;
+        if (!IsDestructible()) return;
 
         //so this block is already empty, there could be a player here. Get gridmanager to check. Spawns are also empty.
         if (blockType == BlockType.Empty || blockType == BlockType.Spawn)
@@ -80,4 +86,18 @@ public class GridBlock : GridBehaviour {
 
         return _transform.position;
     }
+
+    public bool IsOccupied()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 0.45f);
+
+        if (hitColliders.Length > 0)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+   
 }

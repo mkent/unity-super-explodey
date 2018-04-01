@@ -12,5 +12,5 @@ public class NetManager : NetworkManager {
         gridManager = FindObjectOfType<GridManager>();
     }
 
- 
+
 }

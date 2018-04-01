@@ -12,7 +12,19 @@ public class Player : NetworkBehaviour {
     public PlayerCombat playerCombat;
 
     [SyncVar]
-    public int score;
+    private int score;
+    private int lastScore;
+
+    private void Update()
+    {
+        if(score != lastScore)
+        {
+            lastScore = score;
+
+           if(playerManager.OnPlayerScored != null) playerManager.OnPlayerScored.Invoke(netId); //so we have this thing, where playerScored on playermangaer is only called on the server. By monitoring the score change on each client, we can work around that. Not sure about this implmentation yet.
+        }
+
+    }
 
     void OnEnable()
     {
@@ -31,6 +43,11 @@ public class Player : NetworkBehaviour {
     public void AddScore(int _score = 1)
     {
         score += _score;
+    }
+
+    public int Score()
+    {
+        return score;
     }
 
 

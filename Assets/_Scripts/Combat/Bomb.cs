@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Bomb : MonoBehaviour {
 
-    private CombatManager combatManager;
+    private BombManager bombManager;
     private GridManager gridManager;
     private GameObject model;
     //Settings
@@ -16,9 +16,9 @@ public class Bomb : MonoBehaviour {
     private float startTime;
     private Vector2Int gridPosition;
 
-    public void SetCombatManager(CombatManager _combatManager) //this is set on object creation
+    public void SetCombatManager(BombManager _bombManager) //this is set on object creation
     {
-        combatManager = _combatManager;
+        bombManager = _bombManager;
     }
 
     public void SetGridManager(GridManager _gridManager) //this is set on object creation.. eh this is getting kind of messy. 
@@ -39,7 +39,7 @@ public class Bomb : MonoBehaviour {
 
         RemoveModel();//we shouldn't have an existing model, but if we do clean it up
 
-        model = combatManager.GetModel(bombType);
+        model = bombManager.GetModel(bombType);
         model.transform.SetParent(transform);
         model.transform.localPosition = Vector3.zero;
     }
@@ -62,7 +62,7 @@ public class Bomb : MonoBehaviour {
     protected void Detonate()
     {
         Debug.Log("Bomb detonating at " + gridPosition.x.ToString() + "," + gridPosition.z.ToString() + " with range" + range);
-        combatManager.Detonate(gridPosition, range); //this will only get executed on the server
+        bombManager.Detonate(gridPosition, range); //this will only get executed on the server
 
         RemoveModel(); //this will be called on every client, so the bomb will actually vanish... but the explosion would have latency, rethink this. 
         gameObject.SetActive(false);
@@ -72,7 +72,7 @@ public class Bomb : MonoBehaviour {
     {
         if (model) 
         {
-            model.transform.SetParent(combatManager.transform);
+            model.transform.SetParent(bombManager.transform);
             model.SetActive(false);
         }
     }

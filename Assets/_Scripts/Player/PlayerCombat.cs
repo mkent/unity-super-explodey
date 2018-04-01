@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 public class PlayerCombat : NetworkBehaviour {
 
 	private PlayerManager playerManager;
-    private CombatManager combatManager;
+    private BombManager bombManager;
     #region Player script links
     private PlayerMovement playerMovement;
     #endregion
@@ -21,7 +21,7 @@ public class PlayerCombat : NetworkBehaviour {
     // Use this for initialization
     void OnEnable ()
     {
-        combatManager = FindObjectOfType<CombatManager>();
+        bombManager = FindObjectOfType<BombManager>();
 		playerManager = FindObjectOfType<PlayerManager> ();
         playerMovement = GetComponent<PlayerMovement>();
 
@@ -71,7 +71,7 @@ public class PlayerCombat : NetworkBehaviour {
     [ClientRpc]
     public void RpcDropBomb(Vector2Int gridPosition, BombType bombType)
     {
-        combatManager.DropBomb(gridPosition, bombType); //have combat manager actually drop a bomb.
+        bombManager.DropBomb(gridPosition, bombType); //have combat manager actually drop a bomb.
     }
 
     public void DetonateDamage()

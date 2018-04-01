@@ -59,7 +59,7 @@ public class PlayerMovement : NetworkBehaviour {
         {
             return;
         }
-
+        
         if (Input.GetAxis("Horizontal") < -0.1f) //left
         {
             CmdMove(new Vector2Int(0, -1));

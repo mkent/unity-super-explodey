@@ -35,7 +35,7 @@ public class DetonateSequence
     public List<Vector2Int> zPos = new List<Vector2Int>();
     public List<Vector2Int> zNeg = new List<Vector2Int>();
 
-    public int Length() //eww.. maybe should've gone with a 2 dimensial array for this.
+    public int Length() // ihnidwimd. 
     {
         int length = 0;
 
@@ -69,7 +69,7 @@ public class BombManager : MonoBehaviour {
 
     public BombData[] bombData;
 
-    private Bomb[] bombPool = new Bomb[40]; //randomly picked 40 -- rough design doesn't call for more than 6 bombs active per player at one time. 
+    private Bomb[] bombPool = new Bomb[40]; //randomly picked 40 -- Add pool growth;
     private BombData[] bombModelPool;
 
     private float detonateTravelTime = 0.1f;
@@ -87,7 +87,7 @@ public class BombManager : MonoBehaviour {
 
     #region Bomb Dropping and Detonation
 
-    public void DropBomb(Vector2Int gridPosition, BombType bombType)
+    public void DropBomb(Vector2Int gridPosition, BombType bombType, uint originNetID)
     {
         Bomb newBomb = GetBomb();
 
@@ -99,44 +99,51 @@ public class BombManager : MonoBehaviour {
 
         newBomb.SetGridPosition(gridPosition);
         newBomb.SetType(bombType);
+        newBomb.SetOriginNetworkID(originNetID);
         newBomb.gameObject.SetActive(true);
     }
 
-    public void Detonate(Vector2Int origin, int range)
+    public void Detonate(Vector2Int origin, int range, uint netID)
     {
         DetonateSequence detonateSequence = gridManager.GetDetonateSequence(origin, range);
 
-        StartCoroutine(RunDetonateSequence(detonateSequence));
+        StartCoroutine(RunDetonateSequence(detonateSequence,netID));
     }
 
 
-    private IEnumerator RunDetonateSequence(DetonateSequence detonationSeqeuence)
+    private IEnumerator RunDetonateSequence(DetonateSequence detonationSeqeuence, uint netID)
     {
             for (int i = 0; i < detonationSeqeuence.Length(); i++)
             {
                 if(i < detonationSeqeuence.xPos.Count)
                 {
-                    gridManager.GetGridBlock(detonationSeqeuence.xPos[i]).DetonateDamage();
+                    gridManager.GetGridBlock(detonationSeqeuence.xPos[i]).DetonateDamage(netID);
                 }
 
                 if (i < detonationSeqeuence.xNeg.Count)
                 {
-                    gridManager.GetGridBlock(detonationSeqeuence.xNeg[i]).DetonateDamage();
+                    gridManager.GetGridBlock(detonationSeqeuence.xNeg[i]).DetonateDamage(netID);
                 }
 
                 if (i < detonationSeqeuence.zPos.Count)
                 {
-                    gridManager.GetGridBlock(detonationSeqeuence.zPos[i]).DetonateDamage();
+                    gridManager.GetGridBlock(detonationSeqeuence.zPos[i]).DetonateDamage(netID);
                 }
 
                 if (i < detonationSeqeuence.zNeg.Count)
                 {
-                    gridManager.GetGridBlock(detonationSeqeuence.zNeg[i]).DetonateDamage();
+                    gridManager.GetGridBlock(detonationSeqeuence.zNeg[i]).DetonateDamage(netID);
                 }
 
                 yield return new WaitForSeconds(detonateTravelTime);
             }
     }
+
+    public void DetonateDamage(GridBlock gridBlock, uint netID)
+    {
+        gridBlock.DetonateDamage(netID);
+    }
+
 
     #endregion
 

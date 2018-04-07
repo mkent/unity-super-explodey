@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
+[RequireComponent(typeof(PlayerMovement))]
 public class PlayerCombat : NetworkBehaviour {
 
 	private PlayerManager playerManager;
     private BombManager bombManager;
     #region Player script links
+    private Player player;
     private PlayerMovement playerMovement;
     #endregion
 
@@ -22,16 +24,10 @@ public class PlayerCombat : NetworkBehaviour {
     void OnEnable ()
     {
         bombManager = FindObjectOfType<BombManager>();
-		playerManager = FindObjectOfType<PlayerManager> ();
+        player = GetComponent<Player>();
         playerMovement = GetComponent<PlayerMovement>();
-
-		playerManager.AddPlayer (gameObject);
+        playerManager = FindObjectOfType<PlayerManager>();
     }
-
-	void OnDisable()
-	{
-		playerManager.RemovePlayer (gameObject);
-	}
 	
 	// Update is called once per frame
 	void Update ()
@@ -71,13 +67,26 @@ public class PlayerCombat : NetworkBehaviour {
     [ClientRpc]
     public void RpcDropBomb(Vector2Int gridPosition, BombType bombType)
     {
-        bombManager.DropBomb(gridPosition, bombType); //have combat manager actually drop a bomb.
+        bombManager.DropBomb(gridPosition, bombType, netId.Value ); //have combat manager actually drop a bomb.
     }
 
-    public void DetonateDamage()
+    public void DetonateDamage(uint originNetID)
 	{
-		//we is dead.
-		gameObject.SetActive(false);
+        //we is dead.
 
+        if (isServer)
+        {
+            playerManager.PlayerScored(originNetID);
+            //RpcDie();
+        }
+
+        gameObject.SetActive(false);
 	}
+
+    //[ClientRpc]
+    //public void RpcDie()
+    //{
+    //    gameObject.SetActive(false);
+    //}
+
 }

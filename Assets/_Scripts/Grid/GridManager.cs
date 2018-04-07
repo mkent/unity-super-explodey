@@ -71,10 +71,17 @@ public class GridManager : MonoBehaviour {
 
     #region Grid Combat hooks
 
-	public void PlayerDamage(Vector2Int gridPosition) //it's bad this is here and not in combat manager.
-	{
-		playerManager.DetonateDamage (gridPosition);
-	}
+    public void PlayerDamage(Vector2Int gridPosition, uint originNetID)
+    {
+        for (int i = 0; i < playerManager.players.Count; i++)
+        {
+            if (GridManager.IsEqual(playerManager.players[i].playerMovement.GridPosition(), gridPosition))
+            {
+
+                playerManager.players[i].playerCombat.DetonateDamage(originNetID);
+            }
+        }
+    }
 
     public DetonateSequence GetDetonateSequence(Vector2Int origin, int range)
     {

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class Bomb : MonoBehaviour {
 
@@ -15,6 +16,7 @@ public class Bomb : MonoBehaviour {
     //Functional
     private float startTime;
     private Vector2Int gridPosition;
+    private uint originNetID;
 
     public void SetCombatManager(BombManager _bombManager) //this is set on object creation
     {
@@ -31,6 +33,11 @@ public class Bomb : MonoBehaviour {
         gridPosition = _gridPosition;
 
         transform.position = gridManager.GridToWorldPosition(gridPosition);
+    }
+
+    public void SetOriginNetworkID(uint _originNetID)
+    {
+        originNetID = _originNetID;
     }
 
     public void SetType (BombType _bombType) //as above, called from PlayerCombat
@@ -62,7 +69,7 @@ public class Bomb : MonoBehaviour {
     protected void Detonate()
     {
         Debug.Log("Bomb detonating at " + gridPosition.x.ToString() + "," + gridPosition.z.ToString() + " with range" + range);
-        bombManager.Detonate(gridPosition, range); //this will only get executed on the server
+        bombManager.Detonate(gridPosition, range, originNetID); //this will only get executed on the server
 
         RemoveModel(); //this will be called on every client, so the bomb will actually vanish... but the explosion would have latency, rethink this. 
         gameObject.SetActive(false);

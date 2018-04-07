@@ -65,8 +65,10 @@ public class DetonateSequence
 
 public class BombManager : MonoBehaviour {
 
+    #region Manager References
     private GridManager gridManager;
-
+    private PlayerManager playerManager;
+    #endregion
     public BombData[] bombData;
 
     private Bomb[] bombPool = new Bomb[40]; //randomly picked 40 -- Add pool growth;
@@ -77,6 +79,7 @@ public class BombManager : MonoBehaviour {
     void Awake()
     {
         gridManager = FindObjectOfType<GridManager>();
+        playerManager = FindObjectOfType<PlayerManager>();
     }
 
     // Use this for initialization
@@ -106,7 +109,7 @@ public class BombManager : MonoBehaviour {
     public void Detonate(Vector2Int origin, int range, uint netID)
     {
         DetonateSequence detonateSequence = gridManager.GetDetonateSequence(origin, range);
-
+        playerManager.ReturnPlayerBomb(netID); //this returns the bomb count to the player who's bomb this is.
         StartCoroutine(RunDetonateSequence(detonateSequence,netID));
     }
 

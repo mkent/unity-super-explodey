@@ -51,13 +51,17 @@ public class PlayerCombat : NetworkBehaviour {
     {
         if (Time.time - lastDrop < dropCooldown) return;
 
-        if (bombCount > bombMax) return;
+        if (bombCount >= bombMax) return;
 
         lastDrop = Time.time;
-        dropCooldown = 3.0f;
-        //bombCount++;
+        bombCount++;
 
         CmdDropBomb(playerMovement.GridPosition(), currentBombType); //request the server version of this player drop a bomb
+    }
+
+    public void ReturnBomb()
+    {
+        bombCount--;
     }
 
     [Command]

@@ -11,7 +11,7 @@ public class PlayerManager : MonoBehaviour {
 
     public UnityEvent<uint> OnPlayerJoin = new uIntEvent();
     public UnityEvent<uint> OnPlayerLeave = new uIntEvent();
-    public UnityEvent<uint> OnPlayerScored = new uIntEvent();
+    public UnityEvent<uint> OnChangeScore = new uIntEvent();
 
     public List<Player> players = new List<Player>();
 
@@ -34,13 +34,19 @@ public class PlayerManager : MonoBehaviour {
 
     public void PlayerScored(uint netID)
     {
-        Debug.Log("Player " + GetPlayer(netID) + " scored.");
+        Debug.Log("Player " + netID + " scored.");
         GetPlayer(netID).AddScore();
     }
 
     public int GetPlayerScore(uint netID)
-    {      
+    {
+        Debug.Log("Returning a score of " + GetPlayer(netID).Score() + " for " + netID);
        return GetPlayer(netID).Score();
+    }
+
+    public void ReturnPlayerBomb(uint netID)
+    {
+        GetPlayer(netID).playerCombat.ReturnBomb();
     }
 
     Player GetPlayer(uint netID)

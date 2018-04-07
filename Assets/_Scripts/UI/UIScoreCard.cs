@@ -16,7 +16,7 @@ public class UIScoreCard : MonoBehaviour {
 	void Start ()
     {
         playerManager = FindObjectOfType<PlayerManager>();
-        playerManager.OnPlayerScored.AddListener(PlayerScored); //refresh UI
+        playerManager.OnChangeScore.AddListener(OnChangeScore); //refresh UI
     }
 
     public void SetNetID(uint _netID)
@@ -24,10 +24,11 @@ public class UIScoreCard : MonoBehaviour {
         netID = _netID;
     }
 	
-    public void PlayerScored(uint _netID)
+    public void OnChangeScore(uint _netID)
     {
         if(netID == _netID)
         {
+            Debug.Log("Updating Player Score for " + netID);
             textScore.text = playerManager.GetPlayerScore(netID).ToString();
         }
     }

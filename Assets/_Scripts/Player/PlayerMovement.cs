@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -44,6 +45,7 @@ public class PlayerMovement : NetworkBehaviour {
         }
         else
         {
+            moveDirection = (destination - _transform.position).normalized;
             _transform.Translate(moveDirection * moveSpeed * Time.deltaTime);
             isMoving = true;
         }
@@ -62,42 +64,56 @@ public class PlayerMovement : NetworkBehaviour {
         
         if (Input.GetAxis("Horizontal") < -0.1f) //left
         {
-            CmdMove(new Vector2Int(0, -1));
-
+            Move(new Vector2Int(0, -1));
         }
         else if (Input.GetAxis("Horizontal") > 0.1f) //right
         {
-            CmdMove(new Vector2Int(0, 1));
+            Move(new Vector2Int(0, 1));
         }
         else if (Input.GetAxis("Vertical") > 0.1f)
         {
-            CmdMove(new Vector2Int(-1, 0));
+            Move(new Vector2Int(-1, 0));
         }
         else if (Input.GetAxis("Vertical") < -0.1f)
         {
-            CmdMove(new Vector2Int(1, 0));
+            Move(new Vector2Int(1, 0));
         }
-
-
     }
+
+
+    void Move(Vector2Int direction) 
+    {
+        CmdMove(direction); //send move request to server and perform move locally (Destination should be overwritten by server at some point).
+
+       // Vector2Int targetPosition = new Vector2Int(gridPosition.x + direction.x, gridPosition.z + direction.z);
+
+       // if (!gridManager.IsValidMovePosition(targetPosition)) return;
+
+//        gridDestination = targetPosition;
+ //       destination = gridManager.GridToWorldPosition(targetPosition);
+    }
+
 
     [Command]
     private void CmdMove(Vector2Int direction)
     {
         Vector2Int targetPosition = new Vector2Int(gridPosition.x + direction.x, gridPosition.z + direction.z);
-        RpcMove(targetPosition);
-    }
-
-    [ClientRpc]
-    public void RpcMove(Vector2Int targetPosition)
-    {
-       // Vector2Int targetPosition = new Vector2Int(gridPosition.x + direction.x, gridPosition.z + direction.z);
 
         if (!gridManager.IsValidMovePosition(targetPosition)) return;
 
         gridDestination = targetPosition;
         destination = gridManager.GridToWorldPosition(targetPosition);
-        moveDirection = (destination - _transform.position).normalized;
+      
+        RpcSetDestination(gridDestination);
+    }
+
+
+
+    [ClientRpc]
+    public void RpcSetDestination(Vector2Int targetPosition)
+    {
+        gridDestination = targetPosition;
+        destination = gridManager.GridToWorldPosition(targetPosition);
     }
 
     private float lastDistance = 999f;

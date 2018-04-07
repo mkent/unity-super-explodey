@@ -34,11 +34,12 @@ public class PlayerManager : MonoBehaviour {
 
     public void PlayerScored(uint netID)
     {
+        Debug.Log("Player " + GetPlayer(netID) + " scored.");
         GetPlayer(netID).AddScore();
     }
 
     public int GetPlayerScore(uint netID)
-    {
+    {      
        return GetPlayer(netID).Score();
     }
 

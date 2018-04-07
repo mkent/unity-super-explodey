@@ -120,21 +120,25 @@ public class BombManager : MonoBehaviour {
             {
                 if(i < detonationSeqeuence.xPos.Count)
                 {
+                     Debug.Log("Detonation hit block at" + detonationSeqeuence.xPos[i].x + "," + detonationSeqeuence.xPos[i].z);
                     gridManager.GetGridBlock(detonationSeqeuence.xPos[i]).DetonateDamage(netID);
                 }
 
                 if (i < detonationSeqeuence.xNeg.Count)
                 {
+                Debug.Log("Detonation hit block at" + detonationSeqeuence.xNeg[i].x + "," + detonationSeqeuence.xNeg[i].z);
                     gridManager.GetGridBlock(detonationSeqeuence.xNeg[i]).DetonateDamage(netID);
                 }
 
                 if (i < detonationSeqeuence.zPos.Count)
                 {
+                Debug.Log("Detonation hit block at" + detonationSeqeuence.zPos[i].x + "," + detonationSeqeuence.zPos[i].z);
                     gridManager.GetGridBlock(detonationSeqeuence.zPos[i]).DetonateDamage(netID);
                 }
 
-                if (i < detonationSeqeuence.zNeg.Count)
+            if (i < detonationSeqeuence.zNeg.Count)
                 {
+                Debug.Log("Detonation hit block at" + detonationSeqeuence.zNeg[i].x + "," + detonationSeqeuence.zNeg[i].z);
                     gridManager.GetGridBlock(detonationSeqeuence.zNeg[i]).DetonateDamage(netID);
                 }
 

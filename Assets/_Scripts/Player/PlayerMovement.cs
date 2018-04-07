@@ -11,8 +11,8 @@ public class PlayerMovement : NetworkBehaviour {
     private Vector2Int gridPosition;
     private Transform _transform;
 
-    private float arrivalRange = 0.1f; //we've considered ourselves "Arrived"
-    private float moveSpeed = 4.0f;
+    private float arrivalRange = 0.25f; //we've considered ourselves "Arrived"
+    private float moveSpeed = 8.0f;
 
     private Vector2Int gridDestination;
     private Vector3 moveDirection;
@@ -62,19 +62,22 @@ public class PlayerMovement : NetworkBehaviour {
             return;
         }
         
-        if (Input.GetAxis("Horizontal") < -0.1f) //left
+        if (Input.GetKeyDown(KeyCode.LeftArrow))//Input.GetAxis("Horizontal") < -0.1f) //left
         {
             Move(new Vector2Int(0, -1));
         }
-        else if (Input.GetAxis("Horizontal") > 0.1f) //right
+
+        if (Input.GetKeyDown(KeyCode.RightArrow))//Input.GetAxis("Horizontal") > 0.1f) //right
         {
             Move(new Vector2Int(0, 1));
         }
-        else if (Input.GetAxis("Vertical") > 0.1f)
+       
+        if (Input.GetKeyDown(KeyCode.UpArrow))//Input.GetAxis("Vertical") > 0.1f) //up
         {
             Move(new Vector2Int(-1, 0));
         }
-        else if (Input.GetAxis("Vertical") < -0.1f)
+
+        if (Input.GetKeyDown(KeyCode.DownArrow))//Input.GetAxis("Vertical") < -0.1f) //down
         {
             Move(new Vector2Int(1, 0));
         }

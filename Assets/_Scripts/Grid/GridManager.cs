@@ -99,7 +99,7 @@ public class GridManager : MonoBehaviour {
 
         if (endX >= grid.GetLength(0))
         {
-            endX = grid.GetLength(0) - 1;
+            endX = grid.GetLength(0);
         }
 
         for (int x = origin.x; x < endX; x++)
@@ -138,7 +138,7 @@ public class GridManager : MonoBehaviour {
 
         if (endZ >= grid.GetLength(1))
         {
-            endZ = grid.GetLength(1) - 1;
+            endZ = grid.GetLength(1);
         }
 
         for (int z = origin.z; z < endZ; z++)

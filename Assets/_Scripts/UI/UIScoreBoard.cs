@@ -27,7 +27,11 @@ public class UIScoreBoard : MonoBehaviour {
         }
 
         GameObject newScoreCard = Instantiate(scoreCardPrefab, transform);
+       
         newScoreCard.SendMessage("SetNetID", netID);
+
+        RectTransform newScoreCardRectTransform = newScoreCard.GetComponent<RectTransform>();
+        newScoreCardRectTransform.anchoredPosition = new Vector3(newScoreCardRectTransform.anchoredPosition.x, -newScoreCardRectTransform.sizeDelta.y * scoreCards.Count);
 
         scoreCards.Add(netID, newScoreCard);
     }

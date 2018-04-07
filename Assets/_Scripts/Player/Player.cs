@@ -53,29 +53,7 @@ public class Player : NetworkBehaviour {
         //CmdAddPlayer(netId.Value);
 	}
 
-    //[Command]
-    //private void CmdAddPlayer(uint netID)
-    //{
-    //    RpcAddPlayer(netID);
-    //}
-    
-    //[ClientRpc]
-    //private void RpcAddPlayer(uint netID)
-    //{
-    //    playerManager.AddPlayer(this);
-    //}
 
-    //[Command]
-    //private void CmdRemovePlayer(uint netID)
-    //{
-    //    RpcRemovePlayer(netID);
-    //}
-
-    //[ClientRpc]
-    //private void RpcRemovePlayer(uint netID)
-    //{
-    //    playerManager.RemovePlayer(this);
-    //}
 
 	void OnEnable()
     {
@@ -84,10 +62,9 @@ public class Player : NetworkBehaviour {
         playerCombat = GetComponent<PlayerCombat>();
     }
 
-    void OnDisable()
+    void OnDestroy()
     {
         playerManager.RemovePlayer(this);
-        isAdded = false;
     }
 
     public void AddScore(int _score = 1)

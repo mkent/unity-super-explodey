@@ -70,7 +70,7 @@ public class GridBlock : GridBehaviour {
         //so this block is already empty, there could be a player here. Get gridmanager to check. Spawns are also empty.
         if (blockType == BlockType.Empty || blockType == BlockType.Spawn)
         {
-            Debug.Log("Damage from " + netID + " on block " + gridPosition);
+            //Debug.Log("Damage from " + netID + " on block " + gridPosition);
             gridManager.PlayerDamage(gridPosition, netID);
         }
 

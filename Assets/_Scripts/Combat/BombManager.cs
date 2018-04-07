@@ -87,7 +87,7 @@ public class BombManager : MonoBehaviour {
 
     #region Bomb Dropping and Detonation
 
-    public void DropBomb(Vector2Int gridPosition, BombType bombType, NetworkInstanceId originNetID)
+    public void DropBomb(Vector2Int gridPosition, BombType bombType, uint originNetID)
     {
         Bomb newBomb = GetBomb();
 
@@ -103,7 +103,7 @@ public class BombManager : MonoBehaviour {
         newBomb.gameObject.SetActive(true);
     }
 
-    public void Detonate(Vector2Int origin, int range, NetworkInstanceId netID)
+    public void Detonate(Vector2Int origin, int range, uint netID)
     {
         DetonateSequence detonateSequence = gridManager.GetDetonateSequence(origin, range);
 
@@ -111,7 +111,7 @@ public class BombManager : MonoBehaviour {
     }
 
 
-    private IEnumerator RunDetonateSequence(DetonateSequence detonationSeqeuence, NetworkInstanceId netID)
+    private IEnumerator RunDetonateSequence(DetonateSequence detonationSeqeuence, uint netID)
     {
             for (int i = 0; i < detonationSeqeuence.Length(); i++)
             {
@@ -138,6 +138,12 @@ public class BombManager : MonoBehaviour {
                 yield return new WaitForSeconds(detonateTravelTime);
             }
     }
+
+    public void DetonateDamage(GridBlock gridBlock, uint netID)
+    {
+        gridBlock.DetonateDamage(netID);
+    }
+
 
     #endregion
 

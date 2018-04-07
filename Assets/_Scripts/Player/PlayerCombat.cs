@@ -26,9 +26,8 @@ public class PlayerCombat : NetworkBehaviour {
         bombManager = FindObjectOfType<BombManager>();
         player = GetComponent<Player>();
         playerMovement = GetComponent<PlayerMovement>();
+        playerManager = FindObjectOfType<PlayerManager>();
     }
-
-
 	
 	// Update is called once per frame
 	void Update ()
@@ -68,24 +67,26 @@ public class PlayerCombat : NetworkBehaviour {
     [ClientRpc]
     public void RpcDropBomb(Vector2Int gridPosition, BombType bombType)
     {
-        bombManager.DropBomb(gridPosition, bombType, netId ); //have combat manager actually drop a bomb.
+        bombManager.DropBomb(gridPosition, bombType, netId.Value ); //have combat manager actually drop a bomb.
     }
 
-    public void DetonateDamage(NetworkInstanceId originNetID)
+    public void DetonateDamage(uint originNetID)
 	{
         //we is dead.
 
         if (isServer)
         {
             playerManager.PlayerScored(originNetID);
-            RpcDie();
+            //RpcDie();
         }
+
+        gameObject.SetActive(false);
 	}
 
-    [ClientRpc]
-    public void RpcDie()
-    {
-        gameObject.SetActive(false);
-    }
+    //[ClientRpc]
+    //public void RpcDie()
+    //{
+    //    gameObject.SetActive(false);
+    //}
 
 }

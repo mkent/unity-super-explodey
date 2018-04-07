@@ -77,18 +77,21 @@ public class PlayerMovement : NetworkBehaviour {
         {
             CmdMove(new Vector2Int(1, 0));
         }
+
+
     }
 
     [Command]
     private void CmdMove(Vector2Int direction)
     {
-        RpcMove(direction);
+        Vector2Int targetPosition = new Vector2Int(gridPosition.x + direction.x, gridPosition.z + direction.z);
+        RpcMove(targetPosition);
     }
 
     [ClientRpc]
-    public void RpcMove(Vector2Int direction)
+    public void RpcMove(Vector2Int targetPosition)
     {
-        Vector2Int targetPosition = new Vector2Int(gridPosition.x + direction.x, gridPosition.z + direction.z);
+       // Vector2Int targetPosition = new Vector2Int(gridPosition.x + direction.x, gridPosition.z + direction.z);
 
         if (!gridManager.IsValidMovePosition(targetPosition)) return;
 

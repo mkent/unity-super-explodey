@@ -71,8 +71,7 @@ public class GridManager : MonoBehaviour {
 
     #region Grid Combat hooks
 
-
-    public void PlayerDamage(Vector2Int gridPosition, NetworkInstanceId originNetID)
+    public void PlayerDamage(Vector2Int gridPosition, uint originNetID)
     {
         for (int i = 0; i < playerManager.players.Count; i++)
         {

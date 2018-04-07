@@ -16,7 +16,7 @@ public class Bomb : MonoBehaviour {
     //Functional
     private float startTime;
     private Vector2Int gridPosition;
-    private NetworkInstanceId originNetID;
+    private uint originNetID;
 
     public void SetCombatManager(BombManager _bombManager) //this is set on object creation
     {
@@ -35,7 +35,7 @@ public class Bomb : MonoBehaviour {
         transform.position = gridManager.GridToWorldPosition(gridPosition);
     }
 
-    public void SetOriginNetworkID(NetworkInstanceId _originNetID)
+    public void SetOriginNetworkID(uint _originNetID)
     {
         originNetID = _originNetID;
     }

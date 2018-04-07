@@ -62,7 +62,7 @@ public class GridBlock : GridBehaviour {
     }
 
 
-    public void DetonateDamage(NetworkInstanceId netID)
+    public void DetonateDamage(uint netID)
     {
         //Solid blocks can't be damaged and also stop the explosion 
         if (!IsDestructible()) return;
@@ -70,6 +70,7 @@ public class GridBlock : GridBehaviour {
         //so this block is already empty, there could be a player here. Get gridmanager to check. Spawns are also empty.
         if (blockType == BlockType.Empty || blockType == BlockType.Spawn)
         {
+            Debug.Log("Damage from " + netID + " on block " + gridPosition);
             gridManager.PlayerDamage(gridPosition, netID);
         }
 

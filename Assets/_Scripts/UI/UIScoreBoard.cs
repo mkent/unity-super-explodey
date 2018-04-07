@@ -5,27 +5,26 @@ using UnityEngine.Networking;
 
 public class UIScoreBoard : MonoBehaviour {
 
-    private PlayerManager playerManager;
+    public PlayerManager playerManager;
     public GameObject scoreCardPrefab;
-    private Dictionary<NetworkInstanceId, GameObject> scoreCards = new Dictionary<NetworkInstanceId, GameObject>();
+    private Dictionary<uint, GameObject> scoreCards = new Dictionary<uint, GameObject>();
  
-    void Start ()
+    void Awake ()
     {
-        playerManager = FindObjectOfType<PlayerManager>();
+        if(!playerManager)playerManager = FindObjectOfType<PlayerManager>();
+
         playerManager.OnPlayerJoin.AddListener(PlayerJoined);
         playerManager.OnPlayerLeave.AddListener(PlayerLeft);
-
-       
     }
 	
-	void Update () {
-		
-	}
 
-    private void PlayerJoined(NetworkInstanceId netID)
+    private void PlayerJoined(uint netID)
     {
-        if (scoreCards.ContainsKey(netID)) return;
-
+        if (scoreCards.ContainsKey(netID))
+        {
+            Debug.LogWarning("Played joined from existing netID" + netID);
+            return;
+        }
 
         GameObject newScoreCard = Instantiate(scoreCardPrefab, transform);
         newScoreCard.SendMessage("SetNetID", netID);
@@ -33,7 +32,7 @@ public class UIScoreBoard : MonoBehaviour {
         scoreCards.Add(netID, newScoreCard);
     }
 
-    private void PlayerLeft(NetworkInstanceId netID)
+    private void PlayerLeft(uint netID)
     {
         if (!scoreCards.ContainsKey(netID)) return;
 

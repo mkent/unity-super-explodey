@@ -8,7 +8,7 @@ public class UIScoreCard : MonoBehaviour {
 
     private PlayerManager playerManager;
 
-    private NetworkInstanceId netID;
+    private uint netID;
     public Text textName;
     public Text textScore;
 
@@ -19,12 +19,12 @@ public class UIScoreCard : MonoBehaviour {
         playerManager.OnPlayerScored.AddListener(PlayerScored); //refresh UI
     }
 
-    public void SetNetID(NetworkInstanceId _netID)
+    public void SetNetID(uint _netID)
     {
         netID = _netID;
     }
 	
-    public void PlayerScored(NetworkInstanceId _netID)
+    public void PlayerScored(uint _netID)
     {
         if(netID == _netID)
         {

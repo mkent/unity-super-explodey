@@ -5,13 +5,13 @@ using UnityEngine.Networking;
 using UnityEngine.Events;
 
 [System.Serializable]
-public class NetIDEvent : UnityEvent<NetworkInstanceId>{}
+public class uIntEvent : UnityEvent<uint>{}
 
 public class PlayerManager : MonoBehaviour {
 
-    public UnityEvent<NetworkInstanceId> OnPlayerJoin = new NetIDEvent();
-    public UnityEvent<NetworkInstanceId> OnPlayerLeave = new NetIDEvent();
-    public UnityEvent<NetworkInstanceId> OnPlayerScored = new NetIDEvent();
+    public UnityEvent<uint> OnPlayerJoin = new uIntEvent();
+    public UnityEvent<uint> OnPlayerLeave = new uIntEvent();
+    public UnityEvent<uint> OnPlayerScored = new uIntEvent();
 
     public List<Player> players = new List<Player>();
 
@@ -19,26 +19,30 @@ public class PlayerManager : MonoBehaviour {
     public void AddPlayer(Player playerObject)
 	{
         players.Add (playerObject);
-        Debug.Log("ADded PLayer");
+        Debug.Log("Added Player netID: " + playerObject.netId.Value.ToString());
 
         if (OnPlayerJoin != null)
         {
-            OnPlayerJoin.Invoke(playerObject.netId); //could do this from the network join instead of ourselves.. 
+            OnPlayerJoin.Invoke(playerObject.netId.Value); //could do this from the network join instead of ourselves.. 
+        }
+        else
+        {
+            Debug.LogWarning("OnPlayerJoin event has no listeners.");
         }
 
     }
 
-    public void PlayerScored(NetworkInstanceId netID)
+    public void PlayerScored(uint netID)
     {
         GetPlayer(netID).AddScore();
     }
 
-    public int GetPlayerScore(NetworkInstanceId netID)
+    public int GetPlayerScore(uint netID)
     {
        return GetPlayer(netID).Score();
     }
 
-    Player GetPlayer(NetworkInstanceId netID)
+    Player GetPlayer(uint netID)
     {
         if (players.Count <= 0)
         {
@@ -48,7 +52,7 @@ public class PlayerManager : MonoBehaviour {
 
         for (int i = 0; i < players.Count; i++)
         {
-            if (players[i].netId != netID) continue;
+            if (players[i].netId.Value != netID) continue;
 
             return players[i];
         }
@@ -65,7 +69,7 @@ public class PlayerManager : MonoBehaviour {
 			if (players [i] == playerObject) 
 			{
                 players.RemoveAt (i);
-                if (OnPlayerLeave != null) OnPlayerLeave.Invoke(playerObject.netId);
+                if (OnPlayerLeave != null) OnPlayerLeave.Invoke(playerObject.netId.Value);
                 break;
 			}
 		}

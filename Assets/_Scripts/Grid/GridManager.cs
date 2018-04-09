@@ -111,6 +111,12 @@ public class GridManager : MonoBehaviour {
             else
             {
                 detonateSequence.xPos.Add(new Vector2Int(x, origin.z));
+
+                if(grid[x, origin.z].StopsDetonation()) 
+                {
+                    break;
+                }
+
             }
         }
 
@@ -125,6 +131,11 @@ public class GridManager : MonoBehaviour {
             else
             {
                 detonateSequence.xNeg.Add(new Vector2Int(x, origin.z));
+
+                if(!grid[x, origin.z].StopsDetonation())
+                {
+                    break;
+                }
             }
         }
 
@@ -152,6 +163,12 @@ public class GridManager : MonoBehaviour {
             else
             {
                 detonateSequence.zPos.Add(new Vector2Int(origin.x, z));
+
+                if(grid[origin.x, z].StopsDetonation())
+                {
+                    break;
+                }
+
             }
         }
 
@@ -166,6 +183,11 @@ public class GridManager : MonoBehaviour {
             else
             {
                 detonateSequence.zNeg.Add(new Vector2Int(origin.x, z));
+
+                if(grid[origin.x, z].StopsDetonation())
+                {
+                    break;
+                }
             }
         }
 

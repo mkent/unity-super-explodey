@@ -61,6 +61,15 @@ public class GridBlock : GridBehaviour {
         return true;
     }
 
+    public bool StopsDetonation()
+    {
+        if (blockType == BlockType.Empty || blockType == BlockType.Spawn) return false;
+
+        return true;
+
+    }
+
+
 
     public void DetonateDamage(uint netID)
     {

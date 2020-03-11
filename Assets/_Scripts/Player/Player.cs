@@ -1,21 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
+//using UnityEngine.Networking;
 
 
-public class Player : NetworkBehaviour {
+public class Player : MonoBehaviour {
 
 
     private PlayerManager playerManager;
     public PlayerMovement playerMovement;
     public PlayerCombat playerCombat;
 
-
-
     public string myNetID;
 
-    [SyncVar(hook = "OnChangeScore")]
+    public uint playerID;
+    public int inputID = -1;
+
+  //  [SyncVar(hook = "OnChangeScore")]
     private int score;
     //private int lastScore;
 
@@ -26,21 +27,16 @@ public class Player : NetworkBehaviour {
        
         if(!isAdded)
         {
-            if(netId.Value != 0)
+            if(playerID != 0)
             {
                 playerManager.AddPlayer(this);
                 isAdded = true;
-            }    
+            }
+            else
+            {
+                playerID = PlayerManager.rnd32();
+            }
         }
-
-        //if(score != lastScore)
-        //{
-        //    lastScore = score;
-
-        //   if(playerManager.OnPlayerScored != null) playerManager.OnPlayerScored.Invoke(netId.Value); //so we have this thing, where playerScored on playermangaer is only called on the server. By monitoring the score change on each client, we can work around that. Not sure about this implmentation yet.
-        //}
-
-        myNetID = netId.Value.ToString();
 
     }
 
@@ -50,8 +46,8 @@ public class Player : NetworkBehaviour {
 
         if (playerManager.OnChangeScore != null)
         {
-            Debug.Log("Call UI Update score to " + _score + " for player " + netId.Value);
-            playerManager.OnChangeScore.Invoke(netId.Value); //UI scripts subscribe to these events to trigger updates.
+            Debug.Log("Call UI Update score to " + _score + " for player " + playerID);
+            playerManager.OnChangeScore.Invoke(playerID); //UI scripts subscribe to these events to trigger updates.
         }
 
     }
@@ -69,14 +65,8 @@ public class Player : NetworkBehaviour {
         playerManager.RemovePlayer(this);
     }
 
-    //this is only ever called on the server
     public void AddScore(int _score = 1)
     {
-        if (!isServer) 
-        {
-            Debug.LogWarning("AddScore invoked on something other than the server.");
-            return; //just in case.
-        }
         score += _score;
     }
 

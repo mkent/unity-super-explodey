@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
+//using UnityEngine.Networking;
 
 [RequireComponent(typeof(PlayerMovement))]
-public class PlayerCombat : NetworkBehaviour {
+public class PlayerCombat : MonoBehaviour {
 
 	private PlayerManager playerManager;
     private BombManager bombManager;
@@ -39,8 +39,7 @@ public class PlayerCombat : NetworkBehaviour {
 
     private void PlayerInput()
     {
-        if (!isLocalPlayer) return;
-
+ 
         if (Input.GetKeyDown(KeyCode.Space))
         {
             DropBomb();
@@ -56,7 +55,7 @@ public class PlayerCombat : NetworkBehaviour {
         lastDrop = Time.time;
         bombCount++;
 
-        CmdDropBomb(playerMovement.GridPosition(), currentBombType); //request the server version of this player drop a bomb
+        bombManager.DropBomb(playerMovement.GridPosition(), currentBombType,player.playerID);
     }
 
     public void ReturnBomb()
@@ -64,45 +63,18 @@ public class PlayerCombat : NetworkBehaviour {
         bombCount--;
     }
 
-    [Command]
-    private void CmdDropBomb(Vector2Int gridPosition, BombType bombType)
-    {
-        if(isServer && !isClient)bombManager.DropBomb(gridPosition, bombType, netId.Value);//drop server bomb
-        RpcDropBomb(gridPosition, bombType); //relay command to all clients.
-    }
 
-    [ClientRpc]
-    public void RpcDropBomb(Vector2Int gridPosition, BombType bombType)
-    {
-        bombManager.DropBomb(gridPosition, bombType, netId.Value ); //have combat manager actually drop a bomb. Note, right now this is how the local player sees this. 
-    }
 
-    public void DetonateDamage(uint originNetID) 
+    public void DetonateDamage(uint originPlayerID) 
 	{
         //we is dead.
 
-        //Quick reminder as to where this originates. 
-        //A Player drops a bomb, that bomb drop is synced by the server
-        //The bomb has a default timer built in, it detonates after that duration. (This is exploitable per client, but wouldn't matter anyway since the server is the one who decides who dies)
-        //That detonation is handled by GridManager, which determines which grid spots are taking damage
-        //Grid manager also passes the block coordinates to player manager, which checks against its player positions
-        //If a player's grid position matches any of those block coordinates, that player will have this method called.
-        //The actual hit is detected on the server. All clients discard the death information. hit information could be used for visuals.  
-
-        if (isServer)
-        {
-            playerManager.PlayerScored(originNetID);
             gameObject.SetActive(false);
-            RpcDie();
-        }
+  
 
 
 	}
 
-    [ClientRpc]
-    public void RpcDie()
-    {
-        gameObject.SetActive(false);
-    }
+
 
 }

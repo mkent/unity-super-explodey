@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
+//using UnityEngine.Networking;
 
-public class PlayerMovement : NetworkBehaviour {
+public class PlayerMovement : MonoBehaviour {
 
     private GridManager gridManager;
 
@@ -19,6 +19,7 @@ public class PlayerMovement : NetworkBehaviour {
     private Vector3 destination;
 
     private bool isMoving = false;
+
 
     private void OnEnable()
     {
@@ -55,13 +56,8 @@ public class PlayerMovement : NetworkBehaviour {
         PlayerInput();  
     }
 
-    private void PlayerInput() //temporary -- get somethign going in input manager.
+    private void PlayerInput()
     {
-        if (!isLocalPlayer)
-        {
-            return;
-        }
-        
         if (Input.GetKeyDown(KeyCode.LeftArrow))//Input.GetAxis("Horizontal") < -0.1f) //left
         {
             Move(new Vector2Int(0, -1));
@@ -86,20 +82,6 @@ public class PlayerMovement : NetworkBehaviour {
 
     void Move(Vector2Int direction) 
     {
-        CmdMove(direction); //send move request to server and perform move locally (Destination should be overwritten by server at some point).
-
-       // Vector2Int targetPosition = new Vector2Int(gridPosition.x + direction.x, gridPosition.z + direction.z);
-
-       // if (!gridManager.IsValidMovePosition(targetPosition)) return;
-
-//        gridDestination = targetPosition;
- //       destination = gridManager.GridToWorldPosition(targetPosition);
-    }
-
-
-    [Command]
-    private void CmdMove(Vector2Int direction)
-    {
         Vector2Int targetPosition = new Vector2Int(gridPosition.x + direction.x, gridPosition.z + direction.z);
 
         if (!gridManager.IsValidMovePosition(targetPosition)) return;
@@ -107,13 +89,10 @@ public class PlayerMovement : NetworkBehaviour {
         gridDestination = targetPosition;
         destination = gridManager.GridToWorldPosition(targetPosition);
       
-        RpcSetDestination(gridDestination);
+        SetDestination(gridDestination);
     }
 
-
-
-    [ClientRpc]
-    public void RpcSetDestination(Vector2Int targetPosition)
+    public void SetDestination(Vector2Int targetPosition)
     {
         gridDestination = targetPosition;
         destination = gridManager.GridToWorldPosition(targetPosition);

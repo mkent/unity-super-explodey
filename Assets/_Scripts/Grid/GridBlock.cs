@@ -43,7 +43,7 @@ public class GridBlock : GridBehaviour {
 
         if (blockType == BlockType.Spawn)
         {
-            gameObject.AddComponent<UnityEngine.Networking.NetworkStartPosition>();
+            gameObject.AddComponent<PlayerSpawn>();
         }
 
     }

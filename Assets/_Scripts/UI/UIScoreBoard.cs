@@ -18,22 +18,22 @@ public class UIScoreBoard : MonoBehaviour {
     }
 	
 
-    private void PlayerJoined(uint netID)
+    private void PlayerJoined(uint playerID)
     {
-        if (scoreCards.ContainsKey(netID))
+        if (scoreCards.ContainsKey(playerID))
         {
-            Debug.LogWarning("Played joined from existing netID" + netID);
+            Debug.LogWarning("Played joined with existing playerID" + playerID);
             return;
         }
 
         GameObject newScoreCard = Instantiate(scoreCardPrefab, transform);
 
-        newScoreCard.GetComponent<UIScoreCard>().SetNetID(netID);
+        newScoreCard.GetComponent<UIScoreCard>().SetNetID(playerID);
 
         RectTransform newScoreCardRectTransform = newScoreCard.GetComponent<RectTransform>();
         newScoreCardRectTransform.anchoredPosition = new Vector3(newScoreCardRectTransform.anchoredPosition.x, -newScoreCardRectTransform.sizeDelta.y * scoreCards.Count);
 
-        scoreCards.Add(netID, newScoreCard);
+        scoreCards.Add(playerID, newScoreCard);
     }
 
     private void PlayerLeft(uint netID)

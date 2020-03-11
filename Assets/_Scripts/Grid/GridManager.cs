@@ -55,6 +55,13 @@ public class GridManager : MonoBehaviour {
 		csvData.OnDataLoaded.AddListener (OnDataLoaded);
 	}
 
+    public void SpawnPlayers(int quantity = 4)
+    {
+        Vector3[] newPlayerSpawnPositions = new Vector3[4];
+
+
+    }
+
     public GameObject GetModel (BlockType blockType)
 	{	
 		for(int i = 0; i < blockData.Length; i++)
@@ -370,6 +377,20 @@ public class GridManager : MonoBehaviour {
         Debug.LogWarning("No open spawn position found, returning origin");
 
         return Vector3.zero;
+    }
+    
+    public List<Vector3> GetSpawnPositions()
+    {
+        List<GridBlock> gridBlocks = GetBlocksOfType(BlockType.Spawn);
+        List<Vector3> spawnPositions = new List<Vector3>();
+        for (int i = 0; i < gridBlocks.Count; i++)
+        {
+            spawnPositions.Add(gridBlocks[i].Position());
+        }
+
+        if(spawnPositions.Count == 0) Debug.LogWarning("No spawn positions found, returning empty list");
+
+        return spawnPositions;
     }
 
     public List<GridBlock> GetBlocksOfType(BlockType blockType)

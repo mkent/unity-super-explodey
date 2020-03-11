@@ -10,18 +10,45 @@ public class uIntEvent : UnityEvent<uint>{}
 
 public class PlayerManager : MonoBehaviour {
 
+    public bool[] inputIDs = new bool[4];
+
+    GridManager gridManager;
+
     public UnityEvent<uint> OnPlayerJoin = new uIntEvent();
     public UnityEvent<uint> OnPlayerLeave = new uIntEvent();
     public UnityEvent<uint> OnChangeScore = new uIntEvent();
 
     public List<Player> players = new List<Player>();
 
+
+    public GameObject playerPrefab;
+
+    void Awake()
+    {
+        gridManager = FindObjectOfType<GridManager>();
+        gridManager.OnGridLoaded.AddListener(SpawnPlayers);
+    }
+
+    public void SpawnPlayers()
+    {
+        CreatePlayerObjectsAtPostions(gridManager.GetSpawnPositions());
+    }
+
+    public void CreatePlayerObjectsAtPostions(List<Vector3> atPositions )
+    {
+        for(int i = 0; i < atPositions.Count; i++)
+        {
+            GameObject newPlayer = Instantiate(playerPrefab, atPositions[i], Quaternion.identity);
+
+        }
+    }
+
     //this adds the player the player manager's list. This is called from Player at the moment.
     public void AddPlayer(Player player)
 	{
         players.Add (player);
         Debug.Log("Added Player netID: " + player.playerID.ToString());
-
+        player.inputID = GetAvailableInputID();
 
         if (OnPlayerJoin != null)
         {
@@ -32,6 +59,25 @@ public class PlayerManager : MonoBehaviour {
             Debug.LogWarning("OnPlayerJoin event has no listeners.");
         }
 
+    }
+
+    private int GetAvailableInputID()
+    {
+        for(int i = 0; i < inputIDs.Length; i++)
+        {
+            if(!inputIDs[i])
+            {
+                inputIDs[i] = true; //set to in use
+                return i;
+            }
+        }
+
+        return 0;
+    }
+
+    private void ReturnInputID(int inputID)
+    {
+        inputIDs[inputID] = false;
     }
 
     public void PlayerScored(uint playerID)
@@ -77,6 +123,7 @@ public class PlayerManager : MonoBehaviour {
 		{
 			if (players [i] == player) 
 			{
+                ReturnInputID(player.inputID);
                 players.RemoveAt (i);
                 if (OnPlayerLeave != null) OnPlayerLeave.Invoke(player.playerID);
                 break;

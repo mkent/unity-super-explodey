@@ -139,8 +139,9 @@ public class GridManager : MonoBehaviour {
             {
                 detonateSequence.xNeg.Add(new Vector2Int(x, origin.z));
 
-                if(!grid[x, origin.z].StopsDetonation())
+                if(grid[x, origin.z].StopsDetonation())
                 {
+                    Debug.Log("Block at " + x + "," + origin.z + " stops detonation");
                     break;
                 }
             }
@@ -173,6 +174,7 @@ public class GridManager : MonoBehaviour {
 
                 if(grid[origin.x, z].StopsDetonation())
                 {
+                    Debug.Log("Block at " + origin.x + "," + z + " stops detonation");
                     break;
                 }
 
@@ -193,6 +195,7 @@ public class GridManager : MonoBehaviour {
 
                 if(grid[origin.x, z].StopsDetonation())
                 {
+                    Debug.Log("Block at " + origin.x + "," + z + " stops detonation");
                     break;
                 }
             }

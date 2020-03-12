@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour {
 
+    private const float AXIS_INPUT_THRESHOLD = 0.25f;
+
     private GridManager gridManager;
 
     private Vector2Int gridPosition;
@@ -20,6 +22,7 @@ public class PlayerMovement : MonoBehaviour {
 
     private bool isMoving = false;
 
+    private Player player;
 
     private void OnEnable()
     {
@@ -33,6 +36,8 @@ public class PlayerMovement : MonoBehaviour {
         //make sure our destinations are reset.
         destination = _transform.position;
         gridDestination = gridPosition;
+
+        player = GetComponent<Player>();
     }
 
 
@@ -56,24 +61,27 @@ public class PlayerMovement : MonoBehaviour {
         PlayerInput();  
     }
 
-    private void PlayerInput()
+    bool moved = false;
+    private void PlayerInput() 
     {
-        if (Input.GetKeyDown(KeyCode.LeftArrow))//Input.GetAxis("Horizontal") < -0.1f) //left
+        if (player.inputID < 0) return;
+
+        if (Input.GetButtonDown("Left_Player" + player.inputID)) //left
         {
             Move(new Vector2Int(0, -1));
         }
-
-        if (Input.GetKeyDown(KeyCode.RightArrow))//Input.GetAxis("Horizontal") > 0.1f) //right
+        else
+        if (Input.GetButtonDown("Right_Player" + player.inputID)) //right
         {
             Move(new Vector2Int(0, 1));
         }
-       
-        if (Input.GetKeyDown(KeyCode.UpArrow))//Input.GetAxis("Vertical") > 0.1f) //up
+        else
+        if (Input.GetButtonDown("Up_Player" + player.inputID)) //up
         {
             Move(new Vector2Int(-1, 0));
         }
-
-        if (Input.GetKeyDown(KeyCode.DownArrow))//Input.GetAxis("Vertical") < -0.1f) //down
+        else
+        if (Input.GetButtonDown("Down_Player" + player.inputID)) //down
         {
             Move(new Vector2Int(1, 0));
         }

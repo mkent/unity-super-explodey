@@ -6,19 +6,17 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour {
 
-    private const float AXIS_INPUT_THRESHOLD = 0.25f;
 
     private GridManager gridManager;
 
     private Vector2Int gridPosition;
     private Transform _transform;
 
-    private float arrivalRange = 0.25f; //we've considered ourselves "Arrived"
-    private float moveSpeed = 8.0f;
-
+    private float moveDuration = 0.25f;
     private Vector2Int gridDestination;
-    private Vector3 moveDirection;
     private Vector3 destination;
+    public AnimationCurve moveCurve;
+
 
     private bool isMoving = false;
 
@@ -42,26 +40,13 @@ public class PlayerMovement : MonoBehaviour {
 
 
     void Update()
-    {
-        if (AtDestination())
-        {
-            gridPosition = gridDestination;
-            _transform.position = destination;
-            isMoving = false;
-        }
-        else
-        {
-            moveDirection = (destination - _transform.position).normalized;
-            _transform.Translate(moveDirection * moveSpeed * Time.deltaTime);
-            isMoving = true;
-        }
-
+    {    
         if (isMoving) return; 
 
         PlayerInput();  
     }
 
-    bool moved = false;
+  //  bool moved = false;
     private void PlayerInput() 
     {
         if (player.inputID < 0) return;
@@ -70,17 +55,17 @@ public class PlayerMovement : MonoBehaviour {
         {
             Move(new Vector2Int(0, -1));
         }
-        else
+      
         if (Input.GetButtonDown("Right_Player" + player.inputID)) //right
         {
             Move(new Vector2Int(0, 1));
         }
-        else
+     
         if (Input.GetButtonDown("Up_Player" + player.inputID)) //up
         {
             Move(new Vector2Int(-1, 0));
         }
-        else
+      
         if (Input.GetButtonDown("Down_Player" + player.inputID)) //down
         {
             Move(new Vector2Int(1, 0));
@@ -96,38 +81,25 @@ public class PlayerMovement : MonoBehaviour {
 
         gridDestination = targetPosition;
         destination = gridManager.GridToWorldPosition(targetPosition);
-      
-        SetDestination(gridDestination);
+        isMoving = true;
+
+        StartCoroutine(MoveLoop());
     }
-
-    public void SetDestination(Vector2Int targetPosition)
+    IEnumerator MoveLoop ()
     {
-        gridDestination = targetPosition;
-        destination = gridManager.GridToWorldPosition(targetPosition);
-    }
+        float startTime = Time.time;
+        Vector3 startPosition = _transform.position;
 
-    private float lastDistance = 999f;
-
-    private bool AtDestination()
-    {
-        float distanceToDestination = (destination - _transform.position).sqrMagnitude;
-
-        if (distanceToDestination < arrivalRange * arrivalRange)
+        while(Time.time - startTime < moveDuration)
         {
-            lastDistance = 999f;
-            return true;
+                    
+            _transform.position =  Vector3.Lerp(startPosition, destination, moveCurve.Evaluate((Time.time - startTime) / moveDuration));
+            yield return null;
         }
 
-        if(distanceToDestination > lastDistance)
-        {
-            //we overshot..
-            lastDistance = 999f;
-            return true;
-        }
-
-        lastDistance = distanceToDestination;
-
-        return false;
+        isMoving = false;
+        _transform.position = destination;
+        gridPosition = gridDestination;
     }
 
     public bool IsMoving()

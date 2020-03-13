@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 //using UnityEngine.Networking;
 
-public class PlayerMovement : MonoBehaviour {
+public class PlayerMovement : MonoBehaviour
+{
 
 
     private GridManager gridManager;
@@ -38,42 +39,54 @@ public class PlayerMovement : MonoBehaviour {
         player = GetComponent<Player>();
     }
 
+    private Queue<Vector2Int> moveQueue = new Queue<Vector2Int>();
 
     void Update()
-    {    
-        if (isMoving) return; 
+    {
+     
 
-        PlayerInput();  
+        PlayerInput();
+
+        if (!isMoving)
+        {
+            if (moveQueue.Count > 0) Move(moveQueue.Dequeue());
+            return;
+        }
     }
 
-  //  bool moved = false;
-    private void PlayerInput() 
+    //  bool moved = false;
+    private void PlayerInput()
     {
         if (player.inputID < 0) return;
 
         if (Input.GetButtonDown("Left_Player" + player.inputID)) //left
         {
-            Move(new Vector2Int(0, -1));
+            //  Move(new Vector2Int(0, -1));
+            moveQueue.Enqueue(new Vector2Int(0, -1));
         }
-      
+
         if (Input.GetButtonDown("Right_Player" + player.inputID)) //right
         {
-            Move(new Vector2Int(0, 1));
+            // Move(new Vector2Int(0, 1));
+            moveQueue.Enqueue(new Vector2Int(0, 1));
         }
-     
+
         if (Input.GetButtonDown("Up_Player" + player.inputID)) //up
         {
-            Move(new Vector2Int(-1, 0));
+            // Move(new Vector2Int(-1, 0));
+            moveQueue.Enqueue(new Vector2Int(-1, 0));
         }
-      
+
         if (Input.GetButtonDown("Down_Player" + player.inputID)) //down
         {
-            Move(new Vector2Int(1, 0));
+            // Move(new Vector2Int(1, 0));
+
+            moveQueue.Enqueue(new Vector2Int(1, 0));
         }
     }
 
 
-    void Move(Vector2Int direction) 
+    void Move(Vector2Int direction)
     {
         Vector2Int targetPosition = new Vector2Int(gridPosition.x + direction.x, gridPosition.z + direction.z);
 
@@ -85,15 +98,17 @@ public class PlayerMovement : MonoBehaviour {
 
         StartCoroutine(MoveLoop());
     }
-    IEnumerator MoveLoop ()
+    IEnumerator MoveLoop()
     {
         float startTime = Time.time;
         Vector3 startPosition = _transform.position;
 
-        while(Time.time - startTime < moveDuration)
+        while (Time.time - startTime < moveDuration)
         {
-                    
-            _transform.position =  Vector3.Lerp(startPosition, destination, moveCurve.Evaluate((Time.time - startTime) / moveDuration));
+            float currentTime = (Time.time - startTime) / moveDuration;
+            _transform.position = Vector3.Lerp(startPosition, destination, moveCurve.Evaluate(currentTime));
+
+
             yield return null;
         }
 
